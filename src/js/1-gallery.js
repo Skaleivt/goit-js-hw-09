@@ -73,14 +73,14 @@ const galleryContainer = document.querySelector('.gallery');
 
 function createGallery(item) {
   return item
-    .map(({ preview, original, description }) => `<a class="gallery-item" href="${original}">
-      <img class="gallery-image" src="${preview}" alt="${description}"/></a> `)
+    .map(({ preview, original, description }) => `<li class="gallery-link"><a class="gallery-item" href="${original}">
+      <img class="gallery-image" src="${preview}" alt="${description}"/></a></li> `)
     .join("");
 }
 
 galleryContainer.innerHTML = createGallery(images);
 
-const lightbox = new SimpleLightbox('.gallery a', {
+const lightbox = new SimpleLightbox('.gallery li a', {
     captions: true,
     captionsData: 'alt', 
   captionDelay: 250,

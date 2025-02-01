@@ -1,43 +1,51 @@
 const form = document.querySelector('.feedback-form');
 
-const formData = { email: "", message: "" };
-
 const localStorageKey = "feedback-form-state";
 
+const formData = { email: "", message: "" };
+
+const saveToLocalStorage = () => {
+  localStorage.setItem(localStorageKey, JSON.stringify(formData));
+};
+
 document.addEventListener('DOMContentLoaded', () => {
-  const savedData = JSON.parse(localStorage.getItem(localStorageKey));
-  if (savedData) {
-    document.getElementById('email').value = formData.email;
-    document.getElementById('message').value = formData.message;
-      formData.email = savedData.email || '';
-      formData.message = savedData.message || '';
-  }
+  
+  if (!form) return;
+    
+    const emailInput = form.elements.email;
+    const messageInput = form.elements.message;
+  
+    const savedData = JSON.parse(localStorage.getItem(localStorageKey)) || {};
+    
+    formData.email = savedData.email || '';
+    formData.message = savedData.message || '';
+    
+    emailInput.value = formData.email;
+    messageInput.value = formData.message;
 });
 
-form.addEventListener('input', evt => {
-    const emailInput = document.getElementById('email').value 
-    formData.email = emailInput;
-    
-    const messageInput = document.getElementById('message').value 
-    formData.message = messageInput;
-
-    localStorage.setItem("feedback-form-state", JSON.stringify(formData));
+form?.addEventListener('input', evt => {
+    if (evt.target.name in formData) {
+    formData[evt.target.name] = evt.target.value.trim();
+    saveToLocalStorage();
+  }
 });
 
 form.addEventListener("submit", (evt) => {
   evt.preventDefault();
+  
   if (!formData.email || !formData.message) {
     alert("Fill please all fields");
-  } else {
-    console.log(formData);
-
-    localStorage.removeItem(localStorageKey);
-
-    formData.email = "";
-    formData.message = "";
-
-    form.reset();
+    return;
   }
+
+  console.log("Submitted data:", formData);
+
+  localStorage.removeItem(localStorageKey);
+  
+  Object.keys(formData).forEach(key => formData[key] = "");
+
+  form.reset(); 
 });
 
 
